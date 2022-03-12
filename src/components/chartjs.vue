@@ -5,7 +5,10 @@ export default {
   extends: Line,
   props: ["dataChart", "options"],
   mounted() {
-    this.renderChart(this.dataChart, this.options);
+    console.log(this.dataChart);
+    setTimeout(() => {
+      this.renderChart(this.dataChart, this.options);
+    }, 1500);
   },
 };
 </script>

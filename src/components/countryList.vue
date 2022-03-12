@@ -26,11 +26,11 @@
       >
         <div class="inner" @click="select(item.CountryCode)">
           <p class="country"><strong>{{ item.Country }}</strong></p>
-          <p class="TotalConfirmed"><small><strong>TotalConfirmed: </strong></small><span>{{ numberWithCommas(item.TotalConfirmed) }}</span></p>
+          <p class="TotalConfirmed"><small><strong>Total Confirmed: </strong></small><span>{{ numberWithCommas(item.TotalConfirmed) }}</span></p>
           <p class="TotalDeaths text-red-500"><small><strong>Total Deaths: </strong></small><span>{{ numberWithCommas(item.TotalDeaths) }}</span></p>
           <p class="TotalRecovered text-green-500"><small><strong>Total Recovered: </strong></small>{{ numberWithCommas(item.TotalRecovered) }}</p>
         </div>
-        <svg class="bookmark" :class="{ active: item.isBookmark}" @click.prevent="bookmark(item)" enable-background="new 0 0 50 50" height="30px" version="1.1" viewBox="0 0 50 50" width="30px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><rect fill="none" height="30" width="30"/><polygon fill="none" points="25,3.553 30.695,18.321 46.5,19.173   34.214,29.152 38.287,44.447 25,35.848 11.712,44.447 15.786,29.152 3.5,19.173 19.305,18.321 " stroke="#000000" stroke-miterlimit="10" stroke-width="1"/></svg>
+        <svg class="bookmark" :class="{ active: item.isBookmark}" @click.prevent="addbookmark(item)" enable-background="new 0 0 50 50" height="30px" version="1.1" viewBox="0 0 50 50" width="30px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><rect fill="none" height="30" width="30"/><polygon fill="none" points="25,3.553 30.695,18.321 46.5,19.173   34.214,29.152 38.287,44.447 25,35.848 11.712,44.447 15.786,29.152 3.5,19.173 19.305,18.321 " stroke="#000000" stroke-miterlimit="10" stroke-width="1"/></svg>
       </div>
     </div>
   </div>
@@ -58,18 +58,16 @@ export default {
   },
   computed:{
     filerName(){
-      // console.log(this.countries);
       return this.countries.filter(name =>{
-        return name.Country.toLowerCase().includes(this.findName.toLowerCase())
-      })
-    }
+          return name.Country.toLowerCase().includes(this.findName.toLowerCase())
+        })
+    },
   },
   methods: {
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     changeSort(){
-      console.log(this.filerName)
       switch (this.selectSort) {
         case 'Deaths':
             this.countries.sort(function (a, b) {
@@ -89,28 +87,32 @@ export default {
       }
     },
     select(name) {
-      // this.nameCountry = name.toLowerCase();
       this.$emit("countryCode", name.toLowerCase());
     },
-    bookmark(item){
+    addbookmark(item){
       this.$emit("countryCode", null);
-      let localArr=JSON.parse(localStorage.getItem("Bookmark"));
-      console.log(localArr);
-      this.arrBookmark.push({
-        ID:item.ID,
-        Country:item.Country,
-        CountryCode:item.CountryCode,
-        Slug:item.Slug,
-        TotalConfirmed:item.TotalConfirmed,
-        TotalDeaths:item.TotalDeaths,
-        TotalRecovered:item.TotalRecovered,
-        isBookmark:true
+      this.countries.map((x)=>{
+        if(item.CountryCode==x.CountryCode && item.isBookmark==false){
+          x.isBookmark=true
+          this.arrBookmark.push({
+            ID:item.ID,
+            Country:item.Country,
+            CountryCode:item.CountryCode,
+            Slug:item.Slug,
+            TotalConfirmed:item.TotalConfirmed,
+            TotalDeaths:item.TotalDeaths,
+            TotalRecovered:item.TotalRecovered,
+            isBookmark:true
+          })
+        }
       })
       localStorage.setItem('Bookmark', JSON.stringify(this.arrBookmark));
+      // let localArr=JSON.parse(localStorage.getItem("Bookmark"))
+      // console.log(localArr.length);
+      
     },
     showBookmark(){
       this.countries=JSON.parse(localStorage.getItem("Bookmark"))
-      console.log();
     }
   },
   // watch(){
