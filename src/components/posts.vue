@@ -47,7 +47,8 @@ export default {
               TotalConfirmed:item.TotalConfirmed,
               TotalDeaths:item.TotalDeaths,
               TotalRecovered:item.TotalRecovered,
-              isBookmark:false
+              isBookmark:false,
+              show:true
             })
           })
         
